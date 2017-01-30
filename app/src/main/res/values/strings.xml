@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Enable</string>
+    <string name="sign_up_text">Already have an account? Click here to Login</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="Rs">\u20B9</string>
+    <string name="query">For any queries contact us on support@codoc.co.in</string>
+
+</resources>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="140dp"
+    android:id="@+id/popup_element"
+    android:background="@drawable/dialog_bg">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Please SignUp first"
+        android:textSize="17dp"
+        android:id="@+id/textView2"
+        android:textColor="@color/textcolor"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="SignUp"
+        android:textSize="17dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/white"
+        android:id="@+id/okbutton"
+        android:background="@drawable/button_bg"
+        android:onClick="okbutton"/>
+
+</RelativeLayout>

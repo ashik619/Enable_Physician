@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:orientation="vertical">
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/text_input_bg"
+        android:paddingLeft="15dp"
+        android:id="@+id/amount"
+        android:textColor="@color/textcolor"
+        android:textSize="16dp"
+        android:hint="Enter Amount"
+        android:inputType="number"
+        android:textColorHint="@color/textcolor"/>
+    <in.co.codoc.enable.IconTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/textcolor"
+        android:text="Or Choose Packages"
+        android:layout_marginTop="20dp"/>
+    </LinearLayout>
+</LinearLayout>
