@@ -57,7 +57,7 @@ public class DetailsActivity extends AppCompatActivity implements OnTaskComplete
     IconTextView walletAmountView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(null);
         setContentView(R.layout.activity_details);
         user_id = (PreferenceManager.getDefaultSharedPreferences(this).getString("user_id", null));
         key = (PreferenceManager.getDefaultSharedPreferences(this).getString("key", null));
@@ -218,7 +218,6 @@ public class DetailsActivity extends AppCompatActivity implements OnTaskComplete
         }
         i.putExtra("flag",flag);
         startActivity(i);
-
     }
     void getprofileApiCall() {
         try {
@@ -298,7 +297,22 @@ public class DetailsActivity extends AppCompatActivity implements OnTaskComplete
                 .putString("password",null).apply();
         PreferenceManager.getDefaultSharedPreferences(this).edit()
                 .putString("key",null).apply();
-        this.finishAffinity();
+        int type = (PreferenceManager.getDefaultSharedPreferences(this).getInt("type",9));
+        if (type == 1){
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            intent.putExtra("type",type);
+            intent.putExtra("flag",true);
+            startActivity(intent);
+
+        }else if(type == 2){
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            intent.putExtra("type",type);
+            intent.putExtra("flag",true);
+            startActivity(intent);
+
+        }else {
+            this.finishAffinity();
+        }
 
     }
     boolean doubleBackToExitPressedOnce = false;
@@ -320,7 +334,9 @@ public class DetailsActivity extends AppCompatActivity implements OnTaskComplete
             }
         }, 2000);
     }
-
-
-
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.clear();
+    }
 }

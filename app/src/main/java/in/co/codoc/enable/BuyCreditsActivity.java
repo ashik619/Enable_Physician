@@ -56,7 +56,6 @@ public class BuyCreditsActivity extends AppCompatActivity implements OnTaskCompl
     int type;
     UsersAdapter adapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -322,13 +321,10 @@ public class BuyCreditsActivity extends AppCompatActivity implements OnTaskCompl
         String orderId = APP_CODE+timehex;
         return orderId;
     }
-
-
     public class UsersAdapter extends ArrayAdapter<Package> {
         public UsersAdapter(Context context, ArrayList<Package> users) {
             super(context, 0, users);
         }
-
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             // Get the data item for this position
@@ -357,8 +353,5 @@ public class BuyCreditsActivity extends AppCompatActivity implements OnTaskCompl
             }
             return convertView;
         }
-
     }
-
-
 }

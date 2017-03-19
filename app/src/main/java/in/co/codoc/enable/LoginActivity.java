@@ -21,6 +21,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -64,20 +73,11 @@ public class LoginActivity extends AppCompatActivity implements OnTaskCompleted,
     int count = 0;
     boolean googleFlag;
     boolean facebookFlag;
-
-
-
+    private CallbackManager callbackManager;
+    LoginButton fbLoginButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        normalSignUp = (Button) findViewById(R.id.normal_signup_button);
-        normalLogin = (Button) findViewById(R.id.normal_login_button);
-        email_idView = (EditText) findViewById(R.id.email_id);
-        passwordView = (EditText) findViewById(R.id.password);
-        loginSelector = (IconTextView) findViewById(R.id.login_mode_view);
-        checkboxLayout = (LinearLayout) findViewById(R.id.checkbox_layout);
-        ch1 = (CheckBox) findViewById(R.id.checkbox);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -87,6 +87,22 @@ public class LoginActivity extends AppCompatActivity implements OnTaskCompleted,
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
         mGoogleApiClient.connect();
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        getIntentData();
+        setContentView(R.layout.activity_login);
+        normalSignUp = (Button) findViewById(R.id.normal_signup_button);
+        normalLogin = (Button) findViewById(R.id.normal_login_button);
+        email_idView = (EditText) findViewById(R.id.email_id);
+        passwordView = (EditText) findViewById(R.id.password);
+        loginSelector = (IconTextView) findViewById(R.id.login_mode_view);
+        checkboxLayout = (LinearLayout) findViewById(R.id.checkbox_layout);
+        ch1 = (CheckBox) findViewById(R.id.checkbox);
+
+        callbackManager = CallbackManager.Factory.create();
+        fbLoginButton = (LoginButton)findViewById(R.id.login_button);
+        fbLoginButton.setReadPermissions("email");
+        fbLoginButton.setReadPermissions("public_profile");
+        getLoginDetails(fbLoginButton);
         normalSignUp.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 normalSignUp();
@@ -100,6 +116,92 @@ public class LoginActivity extends AppCompatActivity implements OnTaskCompleted,
         loginSelector.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 login_mode();
+            }
+        });
+    }
+    void getIntentData(){
+        Intent intent = getIntent();
+        int type = intent.getIntExtra("type",9);
+        logoutFlag = intent.getBooleanExtra("flag",false);
+        System.out.println("type in login"+type);
+        if(type == 1){
+            LoginManager.getInstance().logOut();
+            if(logoutFlag) {
+                this.finishAffinity();
+            }
+        }if(type == 2){
+            googlesignout();
+        }
+    }
+    public void googlesignout(){
+        if(mGoogleApiClient.isConnected()){
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                    new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(Status status) {
+                            revokeAccess();
+                        }
+                    });
+        }else {
+            mGoogleApiClient.connect();
+        }
+
+    }
+    public void fblogin(View v){
+        fbLoginButton.performClick();
+    }
+    protected void getLoginDetails(final LoginButton login_button) {
+        // Callback registration
+        login_button.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult login_result) {
+                System.out.println("Fb login");
+                GraphRequest request = GraphRequest.newMeRequest(
+                        login_result.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(JSONObject object, GraphResponse response) {
+                                try {
+                                    //String email = object.getString("email");
+                                    String id = object.getString("id");
+                                    if(object.has("name")) {
+                                        username = object.getString("name");
+                                    }
+                                    if(object.has("email")) {
+                                        email_id = object.getString("email");
+                                    }
+                                    profimageUrl = "https://graph.facebook.com/" + id + "/picture?type=large";
+                                    System.out.println("name"+username);
+                                    googleFbId = id;
+                                    if(googleFbId != null) {
+                                        if(loginFlag) {
+                                            googleFbSignInApiCall("1");
+                                        }else signUpApiCAll("1");
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,email");
+                request.setParameters(parameters);
+                request.executeAsync();
+            }
+
+            @Override
+            public void onCancel() {
+                // code for cancellation
+                pd.dismiss();
+                Toast.makeText(getApplicationContext(), "Facebook login failed", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                //  code to handle error
+                pd.dismiss();
+                Toast.makeText(getApplicationContext(), "Facebook login failed", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -130,7 +232,6 @@ public class LoginActivity extends AppCompatActivity implements OnTaskCompleted,
         } else {
             signInApiCAll();
         }
-
     }
     void signUpApiCAll(String acc_type){
         try {
@@ -211,7 +312,7 @@ public class LoginActivity extends AppCompatActivity implements OnTaskCompleted,
             handleSignInResult(result);
         }
         else {
-           // callbackManager.onActivityResult(requestCode, resultCode, data);
+            callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
     @Override
@@ -397,9 +498,9 @@ public class LoginActivity extends AppCompatActivity implements OnTaskCompleted,
                             Toast.makeText(getApplicationContext(),"Please check the password" , Toast.LENGTH_LONG).show();
                         }else if(msg == 5){
                             if(signUpType == 2){
-                                //googleFbSignInApiCall("2");
+                                googleFbSignInApiCall("2");
                             }else if(signUpType == 1){
-                                //googleFbSignInApiCall("1");
+                                googleFbSignInApiCall("1");
                             }
                         }
                     }else if (resultJson.has("res")){

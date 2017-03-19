@@ -130,11 +130,22 @@
                 <Space
                     android:layout_width="20dp"
                     android:layout_height="match_parent" />
-                <Button
+                <FrameLayout
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="54dp"
-                    android:background="@drawable/fb_button"/>
+                    android:layout_weight="1">
+                    <com.facebook.login.widget.LoginButton
+                        android:id="@+id/login_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical|center_horizontal"/>
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:onClick="fblogin"
+                        android:visibility="gone"
+                        android:background="@drawable/fb_button"/>
+                </FrameLayout>
             </LinearLayout>
             <Space
                 android:layout_width="match_parent"

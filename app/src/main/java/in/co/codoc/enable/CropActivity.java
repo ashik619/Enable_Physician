@@ -42,7 +42,7 @@ public class CropActivity extends AppCompatActivity {
     boolean flag;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(null);
         setContentView(R.layout.activity_crop);
         cropImageView = (CropImageView) findViewById(R.id.cropImageView);
         imageView = (ImageView) findViewById(R.id.imageView);
@@ -294,6 +294,11 @@ public class CropActivity extends AppCompatActivity {
         {
             cropped.recycle();
         }
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.clear();
     }
 }
 
